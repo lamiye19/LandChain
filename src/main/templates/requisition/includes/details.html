@@ -1,0 +1,48 @@
+<p class="card-text">
+    Suivant réquisition n°
+    <a
+        href="{% url 'single_requisition' number=requisition.number %}">{{requisition.number}}</a>
+    déposée le {{requisition.date|date:"d F Y"}},
+    {% if requisition.author.person %}
+    {{requisition.author.person.get_gender_display}} {{requisition.author.get_full_name}},
+    {{requisition.author.person.profession|upper}} demeurant à
+    {{requisition.author.person.address}}
+    et domicilié(es) à {{requisition.author.person.residence}},
+    {{requisition.get_quality_display}}
+    et de nationalité {{requisition.author.person.nationality}},
+    {% else %}
+    l'entreprise {{requisition.author.get_full_name}}, {{requisition.get_quality_display}},
+    {% endif %}
+
+    {% for other in requisitions.co_owner %}
+    {% if other.person %}
+    {{other.person.get_gender_display}} {{other.get_full_name}},
+    {{other.person.profession|upper}} demeurant à {{other.person.address}}
+    et domicilié(es) à {{other.person.residence}}, de nationalité {{other.person.nationality}},
+    {% else %}
+    l'entreprise {{other.get_full_name}},
+    {% endif %}
+    {% endfor %}
+
+    demande(nt) l’immatriculation au livre foncier de la République Togolaise
+    d’un immeuble {{requisition.get_type_display}}, consistant en un terrain
+    ayant la forme d’un quadrilatère irrégulier d’une contenance totale de
+    {{requisition.area_a}}a {{requisition.area_ca}}ca, situé à {{requisition.quarter}}
+    connu sous le nom de {{requisition.real_name}}, préfecture de(s) {{requisition.prefecture}}
+    et borné:
+<ul class="list-unstyled">
+    <li>Au Nord par {{requisition.north}}</li>
+    <li>Au Sud par {{requisition.south}}</li>
+    <li>A l’Est par {{requisition.east}}</li>
+    <li>A l’Ouest par {{requisition.western}}</li>
+</ul>
+</p>
+<p class="card-text">
+    {% if requisition.author.person %}
+    {% if requisition.author.person.gender == 'F' %}Elle
+    {% else %}Il{% endif %}
+    {% else %}Il{% endif %}
+    déclare(nt) que ledit immeuble lui appartient et n’est à
+    sa/leur connaissance grevé d’aucuns droits ou charges
+    réels, actuels ou éventuels.
+</p>

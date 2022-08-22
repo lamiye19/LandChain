@@ -1,0 +1,46 @@
+{% extends 'main/base.html' %}
+{% block title %}Accueil | TogoLand{% endblock%}
+
+{% block content %}
+{% load static%}
+<div class="">
+    <img src="{% static 'img/lome12.jpeg' %}" class="w-100">
+</div>
+<div class="container mt-5">
+    <h3>Direction des Affaires Domaniales et cadastrales</h3>
+
+
+    <div class="row text-white">
+        <div class="col-md-6 my-2">
+          <div class="card border-0">
+            <div class="card-body bg-green rounded-3">
+              <h2 class="card-title">Obtenez votre certificat de titre foncier</h2>
+              <div class="card-text text-darker d-flex justify-content-around">
+                <p>Le titre foncier est un document qui atteste qu'une personne est détentrice de 
+                    droits coutumiers sur une parcelle rurale, individuelle ou collective.
+                </p>
+                <img src="{% static 'img/paper1.png' %}" class="">
+              </div>
+              <a href="#" class="btn bg-white">En savoir plus</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 my-2">
+            <div class="card border-0">
+              <div class="card-body bg-green rounded-3">
+                <h2 class="card-title">Enregistrez et déclarez vos biens immobiliers</h2>
+                <div class="card-text text-darker d-flex justify-content-around">
+                  <p>Le processus d'immatriculation foncière est désormais digitalisé. Créez un 
+                    compte puis faites votre demande en quelques minutes.
+                  </p>
+                  {% load static%}
+                  <img src="{% static 'img/home1.png' %}" class="" height="154px">
+                </div>
+                <a href="#" class="btn bg-white">En savoir plus</a>
+              </div>
+            </div>
+          </div>
+    </div>
+
+</div>
+{% endblock%}

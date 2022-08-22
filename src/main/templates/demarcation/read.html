@@ -1,0 +1,81 @@
+{% extends template %}
+{% block title %}Travaux de bornage{% endblock%}
+
+{% block content %}
+<div class="header bg-gradient-success pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">Travaux de bornage</h6>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <!-- Card header -->
+        <div class="card-header border-0">
+          <h3 class="mb-0">LISTE DES TRAVAUX PROGRAMMÉS</h3>
+        </div>
+        <!-- table -->
+        <div class="table-responsive text-darker">
+          {% if demarcations %}
+          <table class="display table text-darker" id="dataTable" style="width:100%">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                {% if 'my_requisitions' not in segment %}
+                <th>Auteur</th>
+                {% endif %}
+                <th>Date</th>
+                <th>Géometre</th>
+                <th>Dessinateur</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="list">
+              {% for demarcation in demarcations %}
+              <tr>
+                <td>
+                  {{demarcation.pk}}
+                </td>
+                {% if 'my_requisitions' not in segment %}
+                <td>{{demarcation.author.get_full_name}}</td>
+                {% endif %}
+                <td>{{demarcation.choosed_date}}</td>
+                <td>{{demarcation.surveyor.get_full_name}}</td>
+                <td>{{demarcation.drawer.get_full_name}}</td>
+                <td>
+                  <div class="dropdown">
+                    <a class="btn btn-sm btn-icon-only" href="#" role="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item" href="{% url 'single_requisition' number=demarcation.requisition.number %}">Voir la demande</a>
+                    </div>
+                  </div>
+                </td>
+
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p class="text-center">Aucun programme n'a été fait</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

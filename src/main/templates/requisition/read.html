@@ -1,0 +1,144 @@
+{% extends template %}
+{% block title %}Réquisitions{% endblock%}
+
+{% block content %}
+<div class="header bg-gradient-success pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">Réquisitions</h6>
+          </ol>
+          </nav>
+        </div>
+        <div class="col-lg-6 col-5 text-right">
+          <a href="{% url 'add_requisition' %}" class="btn btn-sm btn-neutral">Nouvelle demande</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mt--6 bg-white shadow">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <!-- Card header -->
+        <div class="card-header border-0">
+          <h3 class="mb-0">LISTE DES REQUISITIONS</h3>
+        </div>
+        <div class="table-responsive text-darker">
+          {% if requisitions %}
+          <table class="display table text-darker" id="dataTable" style="width:100%">
+            <thead class="thead-light">
+              <tr>
+                <td>#</td>
+                {% if 'my_requisitions' not in segment %}
+                <td>Requérant</td>
+                {% endif %}
+                <td>Prefecture</td>
+                <td>Quartier</td>
+                <td>Terrain</td>
+                <td>Date</td>
+                <td>Etat</td>
+                <td>Progression</td>
+                <td>&nbsp;</td>
+              </tr>
+            </thead>
+            <tbody class="list">
+              {% for requisition in requisitions %}
+              <tr>
+
+                <td>
+                  <a href="{% url 'single_requisition' number=requisition.number %}">{{requisition.number}}</a>
+                </td>
+                {% if 'my_requisitions' not in segment %}
+                <td>{{requisition.author.get_full_name}}</td>
+                {% endif %}
+                <td>{{requisition.prefecture}}</td>
+                <td>{{requisition.quarter}}</td>
+                <td>{{requisition.get_type_display}}</td>
+                <td>{{requisition.date}}</td>
+                {% with state=requisition.state_set.last %}
+                <td>
+                  <span class="badge badge-dot mr-4 text-darker">
+                    {% if requisition.pay_date %}
+                    <i class="{% if state.state == 'A' %} bg-success
+                      {% elif state.state == 'P' %} bg-warning
+                      {% elif state.state == 'C' %} bg-danger
+                      {% else %} bg-default {% endif %}"></i>
+                    <span class="">
+                      {% if state %}
+                      {{ state.get_state_display}}
+                      {% else %} Sans réponse
+                      {% endif %}
+                    </span>
+                  </span>
+                  {% else %}
+                  Payement Requis
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <span class="completion mr-2">
+                      {% if requisition.pay_date %}
+
+                      {% if requisition.state_set.first.state == "A" %}
+
+                      {% if requisition.demarcation_set.all%} 
+
+                      {% if requisition.demarcation_set.last.report_set.all%} 
+                      {% if requisition.state_set.last.state == "T"%} 
+                      100%
+                      {% else %} 75% {% endif %}
+
+                      {% else %} 50% {% endif %}
+
+                      {% else %} 25% {% endif %}
+
+                      {% else %} 10% {% endif %}
+
+                      {% else %} 1% {% endif %}
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  <div class="dropdown">
+                    <a class="btn btn-sm btn-icon-only" href="#" role="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item"
+                        href="{% url 'single_requisition' number=requisition.number %}">Consulter</a>
+                      {% if not requisition.pay_date %}
+                      <a class="dropdown-item" href="{% url 'payment' number=requisition.number %}">Payer</a>
+                      {% else %}
+                      {% if state.state is None %}
+                      <form method="POST" action="{% url 'state_requisition' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="number" value="{{requisition.number}}">
+                        <button type="submit" class="dropdown-item bg-success" value="A" name="state">Publier</button>
+                        <button type="submit" class="dropdown-item bg-danger" value="C" name="state">Rejeter</button>
+                      </form>
+                      {% endif %}
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+                {% endwith %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p class="text-center">Aucune réquisition n'a été fait</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

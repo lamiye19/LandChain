@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facture</title>
+  <link rel="icon" type="image/x-icon"
+    href="/home/lamiye/Documents/stage/IAI-L3/app/myapp/src/main/static/img/armoirie2.png" />
+  <link href="/home/lamiye/Documents/stage/IAI-L3/app/myapp/src/main/static/css/styles.css" rel="stylesheet">
+  <link href="/home/lamiye/Documents/stage/IAI-L3/app/myapp/src/main/static/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <div class="container d-flex justify-content-center py-5">
+    <div class="card col-md-10 col">
+      <div class="card-body p-4">
+        <div class="col d-flex justify-content-between">
+          <div>
+          <img src="/home/lamiye/Documents/stage/IAI-L3/app/myapp/src/main/templates/requisition/otr.png" alt="">
+          </div>
+          <div class="m-2 text-center">
+            <h4>REPUBLIQUE TOGOLAISE</h4> <br> Travail - Liberté - Patrie
+          </div>
+        </div>
+        <h1 class="text-center">FACTURE {{requisition.pay}}</h1>
+        <p class="card-text">
+        <ul class="list-unstyled">
+          <li><u>Référence</u> : {{requisition.number}}</li>
+          <li>
+            <u>{% if requisition.author.person %}Nom{% else %}Raison sociale{% endif %}</u> :
+            {{requisition.author.get_full_name}}
+          </li>
+          <li><u>Date de réquisition</u> : {{requisition.date}}</li>
+          <li><u>Désignation</u> : Demande d'immatriculation au livre foncier de la République Togolaise</li>
+          <li><u>Valeur vénale</u> : {{vv}}</li>
+        </ul>
+        </p>
+        <table class="table table-striped table-responsive">
+          <thead>
+            <tr>
+              <th scope="col">Droits</th>
+              <th scope="col">Taux</th>
+              <th scope="col">Montant</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Droit d'enregistrement</td>
+              <td>5%</td>
+              <td>{{register}} F</td>
+            </tr>
+            <tr>
+              <td>Taxes additionnelles</td>
+              <td>1%</td>
+              <td>{{taxe}} F</td>
+            </tr>
+            <tr>
+              <td>Conservation foncière</td>
+              <td>2%</td>
+              <td>{{safe}} F</td>
+            </tr>
+            <tr>
+              <td>Droit fixes</td>
+              <td></td>
+              <td>{{fixed}} F</td>
+            </tr>
+            <tr>
+              <td>Frais d’insertion au JORT</td>
+              <td></td>
+              <td>{{jort}} F</td>
+            </tr>
+            <tr>
+              <td>Frais de dépôtt</td>
+              <td></td>
+              <td>{{deposit}} F</td>
+            </tr>
+            <tr>
+              <td>TOTAL À PAYER</td>
+              <td></td>
+              <td>{{register|add:taxe|add:safe|add:fixed|add:jort|add:deposit}} F</td>
+            </tr>
+          </tbody>
+        </table>
+        {% comment %}
+        <p class="">
+        <form method="post" action="{% url 'payment' number=requisition.number %}">
+          {% csrf_token %}
+          <button class="btn btn-primary text-center" type="submit">
+            <a href=""></a>PAYER
+          </button>
+        </form>
+        </p>
+        {% endcomment %}
+        <p class="text-end m-2">
+          FEDERER POUR BATIR
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

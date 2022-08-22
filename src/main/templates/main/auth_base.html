@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Font Awesome icons (free version)-->
+    {% load static%}
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/auth.css' %}" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Background Video-->
+    <video class="bg-video" playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+        <source src="{% static 'video/bg.mp4' %}" type="video/mp4" />
+    </video>
+                {% if question %}
+                <div class="masthead">
+        <div class="masthead-content text-white">
+            <div class="container-fluid px-4 px-lg-0">
+                <h1 class="fst-italic lh-1 mb-4">Créez un compte sur TogoLand</h1>
+                <p class="mb-2">
+                    Vous êtes un particulier, vous souhaitez immatriculer votre bien immobilier,
+                    déposer une plainte ou tout autre service, créez un compte particulier.
+                </p>
+                <p class="mb-2">
+                    Vous désirez utiliser nos services pour le compte de votre entreprise? Optez pour un compte
+                    entreperise.
+                </p>
+                <p class="my-5">
+                    <button class="btn btn-warning border-1"><a href="{% url 'person_register' %}">Compte
+                            Particulier</a></button>
+                    <button class="btn btn-info border-1"><a href="{% url 'enterprise_register' %}">Compte
+                            Entreprise</a></button>
+                </p>
+                <p class="mb-2">
+                    Retour à la page d'accueil <a href="{% url 'home' %}">&LongRightArrow;</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="social-icons">
+            {% block content %}{% endblock %}
+    </div>
+    <script href="{% static 'js/bootstrap.bundle.min.js' %}" rel="stylesheet"></script>
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+*:focus{
+    box-shadow: none !important;
+}
+
+/* #nav .navbar-nav .nav-item a, .dropdown-item{
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+a{
+    color: #0a9ff5f8 !important;
+    text-decoration: none !important;
+}
+
+button a{
+    text-decoration: none !important;
+    color: white !important;
+} */
+
+.dropdown-divider{
+    color: red !important;
+}
+
+/* select, input{
+    background-color: white;
+    height: 40px;
+    border: 1px solid gainsboro;
+    padding: 5px 30px 5px 5px;
+    border-radius: 5px;
+} */
+
+.w-10{
+    width: 10%;
+}
+
+input[type=radio]{
+    padding: 0px;
+    border-radius: 0px;
+}
+
+.bg-green{
+    background-color: #146c56 !important;
+}
+
+.text-green{
+    color: #1b9677 !important;
+}
+
+.border-blue{
+    border: solid 1px blue !important;
+}
+
+.response{
+    border-left:3px green solid;
+    margin-left:5px;
+    padding-left:10px;
+}

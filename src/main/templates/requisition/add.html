@@ -1,0 +1,167 @@
+{% extends 'main/base.html' %}
+{% block title %}Inscription{% endblock%}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+<!--Register-->
+<div class="bg-light">
+    <div class="container d-flex justify-content-center py-5">
+        <div class="row col-md-10 bg-white shadow rounded-3">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-5">FORMULAIRE DE DEMANDE DE REQUISITION</h1>
+                <form method="POST" action="{% url 'add_requisition' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <h3 class="col-12 border-bottom my-3">INFORMATIONS DU BIEN</h3>
+
+                        <div class="col-md-6">
+                            <label for="type" class="form-label">Type <span class="text-danger"> *</span></label>
+                            <select class="form-control" name="type" id="type">
+                                <option value="1" selected>Rural non bâti</option>
+                                <option value="2">Rural bâti</option>
+                                <option value="3">Urbain non bâti</option>
+                                <option value="4">Urbain bâti</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="prefecture" class="form-label">Préfecture <span class="text-danger"> *</span></label>
+                            <select class="form-control" name="prefecture" id="prefecture">
+                                <option value="Avé">Avé</option>
+                                <option value="Bas Mono">Bas Mono</option>
+                                <option value="Lacs">Lacs</option>
+                                <option value="Golfe" selected>Golfe</option>
+                                <option value="Vo">Vo</option>
+                                <option value="Yoto">Yoto</option>
+                                <option value="Zio">Zio</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="quarter" class="form-label">Quartier <span class="text-danger"> *</span></label>
+                            <input type="text" class="form-control" id="quarter" name="quarter" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="real_name" class="form-label">Connu sous le nom de </label>
+                            <input type="text" class="form-control" id="real_name" name="real_name">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="area" class="form-label">Surface <span class="text-danger"> *</span></label><br>
+                            <div class="input-group mb-3">
+                                <input type="number" class="form-control" id="area" name="area_a" required min="1"
+                                    title="la surface en a">
+                                <span class="input-group-text">a</span>
+                                <input type="number" class="form-control" id="area" name="area_ca" required min="1"
+                                    title="la surface en ca">
+                                <span class="input-group-text">ca</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="quality" class="form-label">Vous agissez en qualité de <span class="text-danger"> *</span></label><br>
+                            <select class="form-control" name="quality" id="quality">
+                                <option value="1" selected>Majeur(s) non interdit(s) jouissant de ces droits civils
+                                </option>
+                                <option value="2">Mineur émancipé</option>
+                                <option value="3">Mandataire</option>
+                                <option value="4">Copropriétaire</option>
+                                <option value="5">Administrateur des bien de la communauté</option>
+                                <option value="6">Représentant légal</option>
+                                <option value="7">Suivant jugement du</option>
+                                <option value="8">Suivant contrat</option>
+                                <option value="9">Pourvu d'un conseil judiciaire en la personne de</option>
+                            </select>
+                        </div>
+                        
+                        <h5 class="col-12 border-bottom my-3">Limites</h5>
+                        <div class="col-md-6">
+                            <label for="north" class="form-label">Nord <span class="text-danger"> *</span></label>
+                            <input type="text" class="form-control" id="north" name="north" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="south" class="form-label">Sud <span class="text-danger"> *</span></label>
+                            <input type="text" class="form-control" id="south" name="south" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="east" class="form-label">Est <span class="text-danger"> *</span></label>
+                            <input type="text" class="form-control" id="east" name="east" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="western" class="form-label">Ouest <span class="text-danger"> *</span></label>
+                            <input type="text" class="form-control" id="western" name="western" required>
+                        </div>
+
+                        <div class="col-md-12" id="info">
+                            <label for="info" class="form-label">Numéro de jugement ou du contrat / Nom de la
+                                communauté</label>
+                            <input type="text" class="form-control" id="info" name="info">
+                        </div>
+
+                        {% if requisitions %}
+                        <div class="col-md-12" id="">
+                            <label for="co_owner" class="form-label">Numéro(s) de carte d'identité</label>
+                            <div class="row">
+                                <div class="col-8">
+                                    <ul id="co_owner" class="list-unstyled">
+                                        <li>
+                                            <input type="text" class="form-control" id="co_owner1" name="co_owner1"
+                                                required>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-2">
+                                    <button class="btn btn-primary rounded-circle">&plus;</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <h3 class="col-12 border-bottom my-3">DOSSIER</h3>
+
+                        <div class="col-md-6">
+                            <label for="land_receipt" class="form-label">Reçu d'achat ou contrat de vente <span class="text-danger"> *</span></label>
+                            <input type="file" class="form-control" id="land_receipt" name="land_receipt"
+                                accept="application/pdf" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="floor_plan" class="form-label">Plan parcelaire <span class="text-danger"> *</span></label>
+                            <input type="file" class="form-control" id="floor_plan" name="floor_plan"
+                                accept=".pdf" required>
+                        </div>
+
+                        <div class="{% if user.person and user.person.nationality|lower != 'togolaise'  %}col-md-6{% else %}col-md-12{% endif %}">
+                            <label for="notarial_instrument" class="form-label">Acte notarié ou confirmation de
+                                vente <span class="text-danger"> *</span></label>
+                            <input type="file" class="form-control" id="notarial_instrument" name="notarial_instrument"
+                                accept="application/pdf" required>
+                        </div>
+                        {% if file %}
+                        <br>
+                        <small class="text-danger text-center">{{file}}</small>
+                        {% endif %}
+
+                        
+                        <div class="col-md-12" {% if user.person and user.person.nationality|lower != 'togolaise' %} {% else %} hidden{% endif %} >
+                            <label for="authorization" class="form-label">Autorisation pour les étrangers <span class="text-danger"> *</span></label>
+                            <input type="file" class="form-control" id="authorization" name="authorization"
+                                accept="application/pdf">
+                        </div>
+
+                        <div class="col-12 my-4 text-center">
+                            <button type="reset" class="btn btn-outline-danger">Annuler</button>
+                            <button type="submit" class="btn btn-success text-dark">Envoyer</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

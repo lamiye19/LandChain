@@ -1,0 +1,35 @@
+{% extends 'main/auth_base.html' %}
+{% block title %}Connexion{% endblock%}
+
+{% block content %}
+<div class="container ps-5  mt-5 pt-4 text-white border-start">
+	<h1 class="fst-italic lh-1 my-5">Se connecter</h1>
+	<form method="POST" action="{% url 'login' %}">
+		{% csrf_token %}
+		<div class="row g-3">
+			<div class="col-12">
+			  <label for="username" class="form-label">Nom d'utilisateur  <span class="text-danger fw-bolder"> *</span></label>
+			  <input type="text" class="form-control" id="username" name="username" required>
+			</div>
+
+			<div class="col-12">
+			  <label for="password" class="form-label">Mot de passe <span class="text-danger fw-bolder"> *</span></label>
+			  <input type="password" class="form-control" id="password" name="password" required>
+
+			  {% if error %}
+			  <small class="text-danger">{{error}}</small>
+			  {% endif %}
+			</div>
+			{% if message %}
+			<small class="text-green">{{message}}</small>
+			{% endif %}
+			<div class="text-center">
+			  <button type="submit" class="col-12 btn btn-success">Connexion</button>
+			</div>
+
+		</div>                   
+	</form>
+  <h6 class="text-center my-5">Vous n'avez pas encore un compte? <a href="{% url 'register' %}">Créez un compte</a>.</h6>
+</div>
+  
+{% endblock%}

@@ -1,0 +1,92 @@
+{% extends template %}
+{% block title %}Plaintes{% endblock%}
+
+{% block content %}
+<div class="header bg-gradient-success pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">Plaintes</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page content -->
+<div class="container-fluid mt--6 shadow px-5">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <!-- Card header -->
+        <div class="card-header border-0">
+          <h3 class="mb-0">LISTE DES PLAINTES</h3>
+        </div>
+        <!-- Light table -->
+
+        <div class="table-responsive">
+          {% if complaints %}
+          <table class="display table text-darker" id="dataTable" style="width:100%">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col" class="sort" data-sort="name">#</th>
+                <th scope="col" class="sort" data-sort="raison">Raison</th>
+                <th scope="col">Message</th>
+                <th scope="col">Preuve</th>
+                <th scope="col">Etat</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody class="list">
+              {% for complaint in complaints %}
+              <tr>
+                <th scope="row" class="">{{complaint.pk}}</th>
+                <td class="raison">{{complaint.object}}</td>
+                <td class="text-wrap">{{complaint.message}}</td>
+                <td><a href="{{complaint.proof_file.url}}"><i class="bi bi-filetype-pdf text-dark"></i></a></td>
+                <td>
+                  {% if complaint.state %}
+                  <i class="bi bi-check2-square text-success"></i> Acceptée
+                  {% elif complaint.state == False %}
+                  <i class="bi bi-check2-square text-danger"></i> Rejetée
+                  {% else %}
+                  <i class="bi bi-check2-square text-secondary"></i> Sans réponse
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="dropdown">
+                    <a class="btn btn-sm btn-icon-only" href="#" role="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item"
+                        href="{% url 'single_requisition' number=complaint.requisition.number %}">Voir la demande</a>
+                      {% if not complaint.state and complaint.state != False %}
+                      <form method="POST" action="{% url 'state_complaint' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{complaint.pk}}">
+                        <button type="submit" class="dropdown-item text-success" value="1"
+                          name="state">Accepter</button>
+                        <button type="submit" class="dropdown-item text-danger" value="0" name="state">Rejeter</button>
+                      </form>
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p class="text-center">Aucune plainte n'a été fait</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

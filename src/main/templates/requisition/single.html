@@ -1,0 +1,239 @@
+{% extends template %}
+{% block title %}Détails{% endblock%}
+
+{% block content %}
+
+
+<div class="">
+  <div class="container py-4">
+    {% with states=requisition.state_set.all %}
+    <!-- Progress bar -->
+    <div class="col-11 d-flex justify-content-between my-2">
+      {% if states.last.state != 'T' %}
+      <div class="col">
+        <b>Progression</b>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated 
+        {% if states.last.state == 'A' %} bg-success
+        {% elif states.last.state == 'P' %} bg-warning
+        {% elif states.last.state == 'C' %} bg-danger
+        {% else %} bg-secondary{% endif %}" role="progressbar" aria-label="Animated striped example" aria-valuenow="75"
+            aria-valuemin="0" aria-valuemax="100" {% if requisition.pay_date %} {% if states.first.state %} 
+            {% if requisition.demarcation_set.last %} {% if requisition.demarcation_set.last.report_set.last %}
+            style="width: 75%" {% else %}style="width: 50%" {% endif %} {% else %}style="width: 25%" {% endif %} 
+            {% else %}style="width: 10%" {% endif %} {% else %} style="width: 1%" {% endif %}></div>
+        </div>
+      </div>
+      {% elif states.last.state == 'C' %}
+      <button class="ms-3 btn btn-dark">Rejetée et Clôturée</button>
+      {% else %}
+      <button class="ms-3 btn btn-primary col">Nº du titre : {{requisition.landdeed.number}} </button>
+      {% endif %}
+    </div>
+
+    <div class="row">
+      <div class="col col-lg-11 d-flex justify-content-lg-start p-3 border bg-white">
+        <div class="">
+          <i class="bi bi-1-circle {% if states.first.state == 'A' %} text-blue{% endif %}"></i> Demande Acceptée&nbsp;
+        </div>
+        <hr class="w-25 border-3 opacity-100 {% if states.first.state == 'A' %} border-primary{% endif %}" size="7px">
+        <div class="">
+          <i class="bi bi-2-circle {% if requisition.demarcation_set.all %} text-blue{% endif %}"></i> Travaux de
+          bornages programmés&nbsp;
+        </div>
+        <hr class="w-25 border-3 opacity-100 {% if requisition.demarcation_set.all %} border-primary{% endif %}"
+          size="7px">
+        <div class="">
+          <i class="bi bi-3-circle {% if requisition.demarcation_set.last.report_set.last %} text-blue{% endif %}"></i>
+          Rapport des travaux de bornages&nbsp;
+        </div>
+        <hr
+          class=" w-25 border-3 opacity-100 {% if requisition.demarcation_set.last.report_set.last %} border-primary{% endif %}"
+          size="7px">
+        <div class="">
+          <i class="bi bi-4-circle {% if states.last.state == 'T' %} text-blue{% endif %}"></i> Titre Foncier&nbsp;
+        </div>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <!-- Requisition details -->
+      <div class="col-md-6 border shadow p-4 bg-white">
+        <h3 class="text-uppercase">Détails</h3>
+        {% include "requisition/includes/details.html" %}
+
+        
+      </div>
+
+      <!-- Requisition documents and actions -->
+      <div class="col-md-5 ms-md-5">
+        <div class="row shadow border p-4 mt-3 mt-md-0 bg-white">
+          <h3 class="text-uppercase">Documents</h3>
+          <ul class="list-unstyled">
+            <li><a href="{{requisition.land_receipt.url}}"><i class="bi bi-filetype-pdf text-dark"></i>&nbsp;Reçu
+                d'achat
+                ou contrat de vente</a></li>
+            <li><a href="{{requisition.floor_plan.url}}"><i class="bi bi-filetype-pdf text-dark"></i>&nbsp;Plan
+                parcelaire</a></li>
+            {% if requisition.notarial_instrument %}
+            <li><a href="{{requisition.notarial_instrument.url}}"><i class="bi bi-filetype-pdf text-dark"></i>&nbsp;Acte
+                notarié ou confirmation de vente</a></li>
+            {% endif %}
+            {% if requisition.authorization %}
+            <li><a href="{{requisition.authorization.url}}"><i
+                  class="bi bi-filetype-pdf text-dark"></i>&nbsp;Autorisation
+                pour les étrangers</a></li>
+            {% endif %}
+            {% if requisition.liquidation_receipt %}
+            <li>
+              <a href="{{requisition.liquidation_receipt.url}}">
+                <i class="bi bi-filetype-pdf text-dark"></i>&nbsp;Liquidation foncière
+              </a>
+              <a href="{{requisition.liquidation_receipt.url}}" download="True">
+                <i class="bi bi-download text-dark"></i>&nbsp;
+              </a>
+            </li>
+            {% endif %}
+            {% if requisition.file %}
+            <li>
+              <a href="{{requisition.file.url}}">
+                <i class="bi bi-filetype-pdf text-dark"></i>&nbsp;Fiche de réquisition
+              </a>
+              <a href="{{requisition.file.url}}" download="True">
+                <i class="bi bi-download text-dark"></i>&nbsp;
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+
+
+          {% if requisition.demarcation_set.all%}
+          {% with d=requisition.demarcation_set.last %}
+          <h3 class="text-uppercase mt-3">Bornage contradictoire</h3>
+          <ul>
+            <li>Date: {{d.choosed_date}} </li>
+            <li>Géometre: {{d.surveyor.get_full_name}} ({{d.surveyor.person.phone}} - {{d.surveyor.email}})</li>
+            <li>Dessinateur: {{d.drawer.get_full_name}} ({{d.drawer.person.phone}} - {{d.drawer.email}})</li>
+          </ul>
+          {% endwith %}
+          {% endif %}
+        </div>
+
+        {% if Auth %}
+        <!-- Rapport de bornage  -->
+        {% if requisition.demarcation_set.last.report_set.last %}
+        {% with r=requisition.demarcation_set.last.report_set.last %}
+        <div class="row shadow border p-4 mt-3">
+          <div class="d-flex flex-column bg-white">
+            <h3 class="text-uppercase">Rapport de bornage</h3>
+            <p class=""> {{r.pv}} </p>
+            {% if r.floor_plan %}
+            <p class=""> <a href="{{r.floor_plan.url}}"><i class="bi bi-filetype-pdf text-dark"></i>&nbsp;
+                Le plan final</a></p>
+            {% endif %}
+            {% if r.floor_plan and not r.state %}
+            <p class="">
+
+            </p>
+            {% endif %}
+          </div>
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        <!-- Actions  -->
+        {% if states.last.state != 'T' %}
+        {% include "requisition/includes/actions.html" %}
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Complaints -->
+    {% with complaints=requisition.complaint_set.all %}
+    <div class="border p-4 shadow bg-white">
+      <h3 class="text-uppercase">Plaintes contre réquisition</h3>
+      <div class="accordion accordion-flush" id="complaints">
+        {% if complaints %}
+        {% for complaint in complaints %}
+        <div class="accordion-item border-0">
+          <h2 class="accordion-header bg-light" id="complaint-{{complaint.id}}">
+            <button class="accordion-button collapsed d-flex" type="button" data-bs-toggle="collapse"
+              data-bs-target="#flush-{{complaint.id}}" aria-expanded="false" aria-controls="flush-{{complaint.id}}">
+              <div class="">{{complaint.object}}</div>
+              <div class="ms-auto text-muted">Nº{{complaint.id}}</div>
+            </button>
+          </h2>
+          <div id="flush-{{complaint.id}}" class="accordion-collapse collapse"
+            aria-labelledby="complaint-{{complaint.id}}" data-bs-parent="#complaints">
+            <div class="accordion-body">
+              <div class="row">
+                <div class="col">
+                  <p>{{complaint.message}}</p>
+                  <p>
+                    <a href="{{complaint.proof_file.url}}"><i class="bi bi-filetype-pdf text-red"></i>&nbsp;Preuve</a>
+                  </p>
+                </div>
+                <div class="col-1">
+                  {% if complaint.state %}
+                  <i class="bi bi-check2-square text-success"></i> Acceptée
+                  {% elif complaint.state == False %}
+                  <i class="bi bi-check2-square text-danger"></i> Rejetée
+                  {% else %}
+                  <i class="bi bi-check2-square text-secondary"></i> Sans réponse
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="row">
+                {% if complaint.state != False and not complaint.state %}
+                <form method="POST" action="{% url 'state_complaint' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="id" value="{{complaint.pk}}">
+                  <button type="submit" class="btn btn-outline-danger" value="0" name="state">Rejeter</button>
+                  <button type="submit" class="btn btn-success" value="1" name="state">Accepter</button>
+                </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>Aucune plainte en ce jour</p>
+        {% endif %}
+      </div>
+
+    </div>
+    {% endwith %}
+
+    <!-- Historique -->
+    <div class="shadow border p-4 mt-3 bg-white">
+      <div class="d-flex flex-column">
+        <h3 class="text-uppercase">Historique</h3>
+        <div class="mb-auto">
+          {% for state in states %}
+          <div class="d-flex mb-2">
+            <div class="p-2"><i class="bi bi-circle-fill
+          {% if state.state == 'A' %} text-success
+          {% elif state.state == 'P' %} text-warning
+          {% elif state.state == 'C' %} text-danger
+          {% elif state.state == 'T' %} text-primary
+          {% else %} bg-secondary{% endif %}"></i></div>
+            <div class="me-auto p-2">{{state.raison}}</div>
+            <small class="p-2 text-muted">&horbar;&nbsp;{{state.date}}</small>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="d-flex mt-5 justify-content-between">
+          <p><i class="bi bi-circle-fill text-success"></i> Actif</p>
+          <p><i class="bi bi-circle-fill text-warning"></i> En attente</p>
+          <p><i class="bi bi-circle-fill text-danger"></i> Rejeté</p>
+          <p><i class="bi bi-circle-fill text-primary"></i> Terminé</p>
+        </div>
+      </div>
+    </div>
+    {% endwith %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'layouts/base.html' %}
+{% block title %}{% if 'my_deeds' in segment %}Actifs immobiliers{% else %}Registre Foncier{% endif %}{% endblock%}
+
+{% block content %}
+<div class="header bg-gradient-success pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">{% if 'my_deeds' in segment %}Actifs immobiliers{% else %}Registre Foncier{% endif %}</h6>
+                    </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6 bg-white shadow">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <!-- Card header -->
+                <div class="card-header border-0">
+                    <h3 class="mb-0">{% if 'my_deeds' in segment %}LISTE DES ACTIFS{% else %}REGISTRE FONCIER{% endif %}</h3>
+                </div>
+                <div class="table-responsive text-darker">
+                    {% if deeds %}
+                    <table class="display table text-darker" id="dataTable" style="width:100%">
+                        <thead class="thead-light">
+                            <tr>
+                                <td>#</td>
+                                <td>Numéro du Titre</td>
+                                <td>Propriétaire</td>
+                                <td>Date</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </thead>
+                        <tbody class="list">
+                            {% for deed in deeds %}
+                            <tr>
+                                <td>{{deed.pk}}</td>
+                                <td class="text-wrap">{{deed.number}}</td>
+                                <td>{{deed.requisition.author.get_full_name}}</td>
+                                <td>{{deed.date}}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <a class="btn btn-sm btn-icon-only" href="#" role="button"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                            <a class="dropdown-item" href="#">Consulter</a>
+                                            <a class="dropdown-item"
+                                                href="{% url 'single_requisition' number=deed.requisition.pk %}">Voir
+                                                la demande</a>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-center">Aucun actif n'a été ajouté</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

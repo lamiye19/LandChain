@@ -1,0 +1,90 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Rapport des travaux de bornages{% endblock%}
+
+{% block content %}
+<div class="header bg-gradient-success pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Rapport des travaux de bornages</h6>
+                    </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6 bg-white shadow">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <!-- Card header -->
+                <div class="card-header border-0">
+                    <h3 class="mb-0">LISTE DES RAPPORTS</h3>
+                </div>
+                <div class="table-responsive text-darker">
+                    {% if reports %}
+                    <table class="display table text-darker" id="dataTable" style="width:100%">
+                        <thead class="thead-light">
+                            <tr>
+                                <td>#</td>
+                                <td>PV</td>
+                                <td>Plan</td>
+                                <td>Etat</td>
+                                <td>Date</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </thead>
+                        <tbody class="list">
+                            {% for report in reports %}
+                            <tr>
+                                <td>{{report.pk}}</td>
+                                <td class="text-wrap">{{report.pv}}</td>
+                                <td>
+                                    {% if report.floor_plan %}
+                                    <a href="{{report.floor_plan.url}}"><i class="bi bi-filetype-pdf text-red"></i></a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge badge-dot mr-4 text-darker">
+                                        <i class="{% if report.state %} bg-success
+                                        {% elif report.state == False %} bg-warning
+                                        {% else %} bg-default {% endif %}"></i>
+                                    </span>
+                                </td>
+                                <td>{{report.date}}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <a class="btn btn-sm btn-icon-only" href="#" role="button"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                            <!-- <a class="dropdown-item"
+                        href="{% url 'single_report' id=report.pk %}">Consulter</a> -->
+                                            <a class="dropdown-item" href="#">Consulter</a>
+                                            <a class="dropdown-item"
+                                                href="{% url 'single_requisition' number=report.demarcation.requisition.pk %}">Voir
+                                                la demande</a>
+                                            <a class="dropdown-item" href="#">Modifier</a>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-center">Aucune report n'a été fait</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

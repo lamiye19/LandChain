@@ -1,0 +1,200 @@
+{% extends 'main/base.html' %}
+{% block title %}Inscription{% endblock%}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+<!--Register-->
+<div class="bg-light">
+	<div class="container d-flex justify-content-center py-5">
+		{% if question %}
+		<div class="row col-md-8" id="question">
+			<div class="card bg-white rounded-circle p-5 shadow">
+				<div class="card-body text-center">
+					<h1 class="card-title mb-5">CREER UN COMPTE</h1>
+					<p class="card-text">
+						Vous êtes un particulier, vous souhaitez immatriculer votre bien immobilier,
+						déposer une plainte ou tout autre service, créez un compte particulier.
+					</p>
+					<p class="card-text">
+						Vous désirez utiliser nos services pour le compte de votre entreprise? Optez pour un compte
+						entreperise.
+					</p>
+					<p class="card-text my-3">
+						<button class="btn btn-warning border-1"><a href="{% url 'person_register' %}">Compte
+								Particulier</a></button>
+						<button class="btn btn-info border-1"><a href="{% url 'enterprise_register' %}">Compte
+								Entreprise</a></button>
+					</p>
+					<p class="text-center">Si vous avez déjà un compte, <a href="{% url 'login' %}">connectez vous</a>.
+					</p>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+		{% if person %}
+		<div class="row col-md-8" id="person">
+			<div class="card-body">
+				<h1 class="card-title text-center mb-5">CREER UN COMPTE <span class="text-success">PARTICULIER</span>
+				</h1>
+				<form method="POST" action="{% url 'person_register' %}" enctype="multipart/form-data">
+					{% csrf_token %}
+					<div class="row g-3">
+						<h3 class="border-bottom my-3">INFORMATIONS PERSONNELLES</h3>
+						<div class="col-md-6">
+							<label for="" class="form-label">Civilité</label><br>
+							<input type="radio" class="" id="Monsieur" name="gender" value="M" checked>
+							<label for="Monsieur" class="form-label">Monsieur</label>
+							<input type="radio" class="" id="Madame" name="gender" value="F">
+							<label for="Madame" class="form-label">Madame</label>
+						</div>
+
+						<div class="col-md-6">
+							<label for="marital_status" class="form-label">Etat civil</label><br>
+							<select name="marital_status" id="marital_status">
+								<option value="1" selected>Célibataire</option>
+								<option value="2">Epoux(se)</option>
+								<option value="3">Veuf(ve)</option>
+							</select>
+						</div>
+
+						<div class="col-md-12" id="de">
+							<label for="partner_name" class="form-label">De (Nom complet du partenaire)</label>
+							<input type="text" class="form-control" id="partner_name" name="partner_name"
+								placeholder="Nom complet du partenaire">
+						</div>
+
+						<div class="col-md-6">
+							<label for="last_name" class="form-label">Nom</label>
+							<input type="text" class="form-control" id="last_name" name="last_name">
+						</div>
+
+						<div class="col-md-6">
+							<label for="first_name" class="form-label">Prénom</label>
+							<input type="text" class="form-control" id="first_name" name="first_name">
+						</div>
+
+						<div class="col-md-6">
+							<label for="birthday" class="form-label">Né le</label>
+							<input type="date" class="form-control" id="birthday" name="birthday">
+						</div>
+
+						<div class="col-md-6">
+							<label for="bornAt" class="form-label">Né à</label>
+							<input type="text" class="form-control" id="bornAt" name="bornAt">
+						</div>
+
+						<div class="col-md-6">
+							<label for="profession" class="form-label">Profession</label>
+							<input type="text" class="form-control" id="profession" name="profession">
+						</div>
+
+						<div class="col-6">
+							<label for="id_document" class="form-label">Votre carte d'identité en PDF</label>
+							<input type="file" class="form-control" id="id_document" name="id_document" required>
+						</div>
+
+						<h3 class="border-bottom my-3">INFORMATIONS DE CONTACT</h3>
+
+						<div class="col-md-6">
+							<label for="address" class="form-label">Habite à</label>
+							<input type="text" class="form-control" id="address" name="address">
+						</div>
+
+						<div class="col-md-6">
+							<label for="residence" class="form-label">Réside à</label>
+							<input type="text" class="form-control" id="residence" name="residence">
+						</div>
+
+						<div class="col-md-6">
+							<label for="phone" class="form-label">Numéro de téléphone</label>
+							<input type="text" class="form-control" id="phone" name="phone">
+						</div>
+
+
+						<div class="col-md-6">
+							<label for="email" class="form-label">Email</label>
+							<input type="email" class="form-control" id="email" name="email" required>
+						</div>
+
+						<h3 class="border-bottom my-3">INFORMATIONS DE CONNEXION</h3>
+
+						<div class="col-md-6">
+							<label for="username" class="form-label">Numéro de carte d'identité</label>
+							<input type="text" class="form-control" id="username" name="username" required>
+							{% if username %}
+							<small class="text-danger">{{username}}</small>
+							{% endif %}
+						</div>
+
+						<div class="col-md-6">
+							<label for="password" class="form-label">Mot de passe</label>
+							<input type="password" class="form-control" id="password" name="password" minlength="8"
+								required>
+							{% if password %}
+							<small class="text-danger">{{password}}</small>
+							{% endif %}
+						</div>
+					</div>
+
+					<div class="col-12 my-4 text-center">
+						<button type="reset" class="btn btn-outline-danger">Annuler</button>
+						<button type="submit" class="btn btn-success text-dark">Créer un compte</button>
+					</div>
+				</form>
+				<p class="text-center">Si vous avez déjà un compte, <a href="{% url 'login' %}">connectez vous</a>.</p>
+			</div>
+		</div>
+		{% endif %}
+
+		{% if enterprise %}
+		<div class="card col-md-8 col" id="enterprise">
+			<div class="card-body">
+				<h1 class="card-title text-center mb-5">CREER UN COMPTE <span class="text-success">ENTREPRISE</span>
+				</h1>
+				<form method="POST" action="{% url 'enterprise_register' %}">
+					{% csrf_token %}
+					<div class="row g-3">
+						<div class="col-md-6">
+							<label for="username" class="form-label">Numéro NIF</label>
+							<input type="text" class="form-control" id="username" name="username" required>
+							{% if username %}
+							<small class="text-danger">{{username}}</small>
+							{% endif %}
+						</div>
+
+						<div class="col-md-6">
+							<label for="first_name" class="form-label">Raison sociale</label>
+							<input type="text" class="form-control" id="first_name" name="first_name">
+						</div>
+
+						<div class="col-md-6">
+							<label for="email" class="form-label">Email</label>
+							<input type="email" class="form-control" id="email" name="email" required>
+						</div>
+
+						<div class="col-md-6">
+							<label for="password" class="form-label">Mot de passe</label>
+							<input type="password" class="form-control" id="password" name="password" minlength="8"
+								required>
+							{% if password %}
+							<small class="text-danger">{{password}}</small>
+							{% endif %}
+
+						</div>
+					</div>
+
+					<div class="col-12 my-4 text-center">
+						<button type="reset" class="btn btn-outline-danger">Annuler</button>
+						<button type="submit" class="btn btn-success text-dark">Créer un compte</button>
+					</div>
+				</form>
+				<p class="text-center">Si vous avez déjà un compte, <a href="{% url 'login' %}">connectez vous</a>.</p>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

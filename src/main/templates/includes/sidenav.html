@@ -1,0 +1,121 @@
+<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light text-black bg-white"
+  id="sidenav-main">
+  <div class="scrollbar-inner">
+    <!-- Brand -->
+    <div class="sidenav-header  align-items-center">
+      <a class="navbar-brand" href="/">
+        <!-- <img src="/static/assets/img/brand/blue.png" class="navbar-brand-img" alt="Argon Design - Jinja Template Logo."> -->
+        {{user.get_full_name}}
+      </a>
+      <a class="">
+        {% if user.person %}
+        {{user.person.get_type_display}}
+        {% else %}Entreprise
+        {% endif %}
+      </a>
+    </div>
+    <div class="navbar-inner mt-3">
+      <!-- Collapse -->
+      <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+        <!-- Nav items -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link {% if 'dashbord' in segment %} active {% endif %}" href="{% url 'dashbord' %}">
+              <i class="ni ni-tv-2 text-primary"></i>
+              <span class="nav-link-text">Tableau de bord</span>
+            </a>
+          </li>
+          {% if user.person.type == "GRH" %}
+          <li class="nav-item">
+            <a class="nav-link {% if 'CLIENT' in segment %} active {% endif %}" href="{% url 'client' %}">
+              <i class="fa fa-users text-blue"></i>
+              <span class="nav-link-text">Clients</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'BORNAGE' in segment %} active {% endif %}" href="{% url 'b_bornage' %}">
+              <i class="fas fa-user-friends text-dark"></i>
+              <span class="nav-link-text">Bureau de bornage</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'GUICHET' in segment %} active {% endif %}" href="{% url 'guichet' %}">
+              <i class="fa fa-users-cog text-green"></i>
+              <span class="nav-link-text">Division Cadastre</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'DESSIN' in segment %} active {% endif %}" href="{% url 'dessin' %}">
+              <i class="fa fa-user-edit text-gray"></i>
+              <span class="nav-link-text">Dessinateurs</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'GEOMETRE' in segment %} active {% endif %}" href="{% url 'geometre' %}">
+              <i class="fa fa-user-tag text-blue"></i>
+              <span class="nav-link-text">Ordre des géomètre</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'CONSERVATION' in segment %} active {% endif %}" href="{% url 'conservation' %}">
+              <i class="fa fa-user-shield text-danger"></i>
+              <span class="nav-link-text">Bureau de conservation</span>
+            </a>
+          </li>
+          {% endif %}
+          {% comment %}
+          <!-- <li class="nav-item">
+            <a class="nav-link {% if 'map' in segment %} active {% endif %}" href="{% url 'pdf2' %}">
+              <i class="ni ni-pin-3 text-primary"></i>
+              <span class="nav-link-text">pdf</span>
+            </a>
+          </li> -->
+          {% endcomment %}
+        </ul>
+        {% if user.person.type != 'GRH' %}
+        <!-- Divider -->
+        <hr class="my-3">
+        <!-- Heading -->
+        <h6 class="navbar-heading p-0 text-muted">
+          <span class="docs-normal">TRAITEMENTS</span>
+        </h6>
+        <!-- Navigation -->
+        <ul class="navbar-nav mb-md-3">
+          <li class="nav-item">
+            <a class="nav-link {% if 'requisitions' in segment %} active {% endif %}" href="{% url 'requisitions' %}">
+              <i class="ni ni-archive-2"></i>
+              <span class="nav-link-text">Demandes</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'complaints' in segment %} active {% endif %}" href="{% url 'complaints' %}">
+              <i class="bi bi-mailbox2 text-orange"></i>
+              <span class="nav-link-text">Plaintes</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'demarcations' in segment %} active {% endif %}" href="{% url 'demarcations' %}">
+              <i class="ni ni-archive-2"></i>
+              <span class="nav-link-text">Travaux de bornages</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'reports' in segment %} active {% endif %}" href="{% url 'reports' %}">
+              <i class="ni ni-archive-2"></i>
+              <span class="nav-link-text">Rapports de bornage</span>
+            </a>
+          </li>
+        {% if user.person.type == 'CONSERVATION' %}
+          <li class="nav-item">
+            <a class="nav-link {% if 'deeds' in segment %} active {% endif %}" href="{% url 'deeds' %}">
+              <i class="ni ni-books"></i>
+              <span class="nav-link-text">Registre foncier</span>
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>

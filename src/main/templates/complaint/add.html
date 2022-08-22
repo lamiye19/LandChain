@@ -1,0 +1,64 @@
+{% extends 'main/base.html' %}
+{% block title %}Plainte{% endblock%}
+
+{% block content %}
+
+<!--Register-->
+<div class="container d-flex justify-content-center py-5">
+    <div class="card col-md-8 col">
+        <div class="card-body">
+            <h5 class="card-title text-center">Faire une plainte</h5>
+            <form method="POST" action="{% url 'add_complaint' number=number %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="type" class="form-label">Type de la plainte </label>
+                        <input type="text" class="form-control" id="type" name="type" value="Immatriculation foncière"
+                            readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="requisition" class="form-label">Requisition </label>
+                        <input type="text" class="form-control" id="requisition" name="requisition"
+                            value="Req-{{number}}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="object" class="form-label">Objet de la plainte <span class="text-danger fw-bolder">
+                                *</span></label>
+                        <input type="text" class="form-control" id="object" name="object" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="message" class="form-label">Veuillez laisser votre plainte ici <span
+                                class="text-danger fw-bolder"> *</span></label>
+                        <input type="text" class="form-control" id="message" name="message" required>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="proof_file" class="form-label">Sélectionner le fichier à joindre <span
+                                class="text-danger fw-bolder"> *</span></label>
+                        <input type="file" class="form-control" id="proof_file" name="proof_file" 
+                        accept="application/pdf" required>
+                        <small class="text-muted">Réunissez toutes les preuves à soumettre dans un seul document
+                            PDF.</small>
+                        {% if file %}
+                        <br>
+                        <small class="text-danger">{{file}}</small>
+                        {% endif %}
+                    </div>
+
+                    {% if message %}
+                    <div class="alert alert-light" role="alert">
+                        {{message}}
+                    </div>
+                    {% endif %}
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

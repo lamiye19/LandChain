@@ -1,0 +1,97 @@
+<div class="row shadow border p-4 mt-3">
+  <div class="d-flex flex-column">
+    <h3 class="text-uppercase">Action</h3>
+    {% if not requisition.pay_date %}
+    {% if user == requisition.author.username %}
+    <a href="{% url 'payment' number=requisition.number %}">Paiement requis</a>
+    {% else %}
+    En attente de paiement
+    {% endif %}
+    {% elif not states %}
+    {% if user.person.type == 'GUICHET' %}
+    <form method="POST" action="{% url 'state_requisition' %}">
+      {% csrf_token %}
+      <input type="hidden" name="number" value="{{requisition.number}}">
+      <button type="submit" class="btn btn-outline-danger" value="C" name="state">Rejeter</button>
+      <button type="submit" class="btn btn-success" value="A" name="state">Publier</button>
+    </form>
+    {% endif %}
+    {% elif states.last.state == "A" %}
+    {% with d=requisition.demarcation_set.last %}
+    {% if not d %}
+    {% if user.person.type == 'BORNAGE' %}
+    <h3>Programmer travaux de bornage</h3>
+    <form method="POST" action="{% url 'add_demarcation' %}" class="row">
+      {% csrf_token %}
+      <input type="hidden" name="number" value="{{requisition.number}}">
+      <div class="col-md-6">
+        <label for="date" class="form-label">Date<span class="text-danger"> *</span></label>
+        <input type="date" class="form-control" id="date" name="date" required min="{% now 'Y-m-d' %}">
+      </div>
+      <div class="col-md-4">
+        <label for="heure" class="form-label">Heure<span class="text-danger"> *</span></label>
+        <input type="time" class="form-control" id="heure" name="heure" required min="{% now 'H:M' %}">
+      </div>
+      <div class="col-md-12">
+        <label for="surveyor" class="form-label">Géometre<span class="text-danger"> *</span></label>
+        <select class="form-control" name="surveyor" id="surveyor">
+          {% for surveyor in surveyors %}
+          <option value="{{surveyor.user.username}}">{{surveyor.user.get_full_name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-12">
+        <label for="drawer" class="form-label">Dessinateur<span class="text-danger"> *</span></label>
+        <select class="form-control" name="drawer" id="drawer">
+          {% for drawer in drawers %}
+          <option value="{{drawer.user.username}}">{{drawer.user.get_full_name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col my-2">
+        <button type="submit" class="btn btn-success">Programmer</button>
+      </div>
+    </form>
+    {% endif %}
+    {% elif not d.report_set.last %}
+    <h3>Rapport des travaux de bornage</h3>
+    {% if user.username == d.surveyor.username %}
+    <div class="col my-2">
+      <a class="btn btn-primary" href="{% url 'add_report' id=requisition.demarcation_set.last.pk %}">Rédiger
+        PV</a>
+    </div>
+    {% endif %}
+    {% elif not d.report_set.last.floor_plan %}
+    {% if user.username == d.drawer.username %}
+    <form method="POST" action="{% url 'add_plan' number=requisition.pk %}" class="row"
+      enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="id" value="{{requisition.demarcation_set.last.report_set.last.pk}}">
+      <div class="col-md-6">
+        <label for="floor_plan" class="form-label">Plan parcelaire<span class="text-danger"> *</span></label>
+        <input type="file" class="form-control" id="floor_plan" name="floor_plan" required>
+        {% if file %}
+        <small class="text-red"> {{file}} </small>
+        {% endif %}
+      </div>
+      <div class="col my-2">
+        <button type="submit" class="btn btn-success">Ajouter</button>
+      </div>
+    </form>
+    {% endif %}
+    {% else %}
+    {% if user.person.type == 'CONSERVATION' %}
+    <div class="col my-2">
+      <form method="post" action="{% url 'add_deed' number=requisition.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit">Générer le tire foncier</button>
+      </form>
+    </div>
+    {% endif %}
+    {% endif %}
+    {% endwith %}
+    {% else %}
+    <p>Pas d'action</p>
+    {% endif %}
+  </div>
+</div>

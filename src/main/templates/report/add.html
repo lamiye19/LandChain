@@ -1,0 +1,113 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Rédaction de PV{% endblock%}
+
+{% block content %}
+
+<!--Register-->
+<div class="container d-flex justify-content-center pb-5">
+    <div class="card col-md-8 col border-0 shadow-none">
+        <div class="card-body">
+            <h2 class="card-title text-center text-uppercase">Rapport de travaux de bornage</h2>
+            <form method="POST" action="{% url 'add_report' id=id %}">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="pv" class="form-label">PV <span class="text-danger fw-bolder"> *</span></label>
+                        <textarea name="pv" id="pv" cols="30" rows="10" class="form-control" minlength="10"
+                            required></textarea>
+                    </div>
+                    <h3 class="col-12 border-bottom my-3">Coordonnées</h3>
+                    <div class="col-md-6">
+                        <label for="object" class="form-label">B1 <span class="text-danger fw-bolder">
+                                *</span></label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="x1" name="x1" required minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">x</span>
+                            <input type="text" class="form-control" id="y1" name="y1" required minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">y</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="object" class="form-label">B2 <span class="text-danger fw-bolder">
+                                *</span></label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="x2" name="x2" required minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">x</span>
+                            <input type="text" class="form-control" id="y2" name="y2" required minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">y</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="object" class="form-label">B3 <span class="text-danger fw-bolder">
+                                *</span></label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="x3" name="x3" required minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">x</span>
+                            <input type="text" class="form-control" id="y3" name="y3" required minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">y</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="object" class="form-label">B4</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="x4" name="x4" minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">x</span>
+                            <input type="text" class="form-control" id="y4" name="y4" minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">y</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="object" class="form-label">B5</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="x5" name="x5" minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">x</span>
+                            <input type="text" class="form-control" id="y5" name="y5" minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">y</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="object" class="form-label">B6</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="x6" name="x6" minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">x</span>
+                            <input type="text" class="form-control" id="y6" name="y6" minlength="9"
+                                pattern="[0-9]{6}[.][0-9]{2}" title="Une coordonnée est un décimal séparé par un point">
+                            <span class="input-group-text">y</span>
+                        </div>
+                    </div>
+
+                    {% if message %}
+                    <div class="alert alert-light" role="alert">
+                        {{message}}
+                    </div>
+                    {% endif %}
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-body{
+        color: black;
+        background: lightgreen;
+    }
+</style>
+{% endblock %}
