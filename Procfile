@@ -1,0 +1,1 @@
+web gunicorn src.dadc.wsgi:application --log-file -

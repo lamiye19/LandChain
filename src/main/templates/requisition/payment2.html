@@ -28,12 +28,13 @@
                     <li><u>Valeur vénale</u> : {{vv}}</li>
                 </ul>
             </p>
-            <table class="table table-striped table-responsive">
+            <div class="table-responsive">
+              <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th scope="col">Droits</th>
-                    <th scope="col">Taux</th>
-                    <th scope="col">Montant</th>
+                    <th scope="">Droits</th>
+                    <th scope="">Taux</th>
+                    <th scope="">Montant</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -74,6 +75,8 @@
                   </tr>
                 </tbody>
             </table>
+            </div>
+            
             <p class="">
                 <form method="post" action="{% url 'payment' number=requisition.number %}">
                     {% csrf_token %}

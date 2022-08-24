@@ -1,4 +1,6 @@
 import contextlib
+from urllib import response
+from urllib.request import HTTPRedirectHandler, Request
 from django.contrib.auth.models import AnonymousUser
 from datetime import datetime
 from email import message
@@ -9,7 +11,8 @@ from django.conf import settings
 from django.urls import reverse
 from django.template import engines
 from django.shortcuts import redirect, render
-
+import requests
+from dadc.settings import BASE_DIR
 from main.pays import PAYS
 from .choices import *
 from main.models import Coordinate, Demarcation, Report, State, User, Complaint, Person, Requisition, landDeed
@@ -21,6 +24,9 @@ from django.template.loader import render_to_string
 from django.core.files import File
 from django.db.models import Q
 
+
+def error500(request):
+    return render(request, 'home/page-500.html')
 
 def error403(request):
     return render(request, 'home/page-403.html')
@@ -144,7 +150,7 @@ def person_register(request):
         id_document = request.FILES['id_document']
 
         if id_document.name.split('.')[-1] != 'pdf':
-            context['file'] = "Le fichier doit être un PDF."
+            context['file'] = "Le fichier doit être en PDF."
             return render(request, "auth/register.html", context)
 
         data = {
@@ -195,7 +201,7 @@ def enterprise_register(request):
         id_document = request.FILES['id_document']
 
         if id_document.name.split('.')[-1] != 'pdf':
-            context['file'] = "Le fichier doit être un PDF."
+            context['file'] = "Le fichier doit être en PDF."
             return render(request, "auth/register.html", context)
 
         data = {
@@ -312,7 +318,7 @@ def requisitions(request):
         if u.type == 'DESSIN':
             requisitions = Requisition.objects.filter(demarcation__drawer = user)
         if u.type == 'CONSERVATION':
-            requisitions = Requisition.objects.filter(landDeed__generated_by = user)
+            requisitions = Requisition.objects.filter(landdeed__author = user)
     except ObjectDoesNotExist:
         return redirect('error403')
 
@@ -346,7 +352,7 @@ def add_requisition(request):
         notarial_instrument=request.FILES['notarial_instrument']
 
         if request.FILES['land_receipt'].name.split('.')[-1] != 'pdf' or request.FILES['floor_plan'].name.split('.')[-1] != 'pdf' or request.FILES['notarial_instrument'].name.split('.')[-1] != 'pdf':
-            context['file'] = "Les fichiers doivent être un PDF."
+            context['file'] = "Les fichiers doivent être en PDF."
             return render(request, "requisition/add.html", context)
 
         requisition = Requisition.objects.create(
@@ -371,10 +377,12 @@ def add_requisition(request):
             floor_plan=files['floor_plan'],
             notarial_instrument=files['notarial_instrument'],
         )
-
-        req_file(request, requisition)
-    
         requisition.save()
+
+        
+
+        req_file(request, requisition.number)
+    
 
         context['message'] = 'Réquisition bien envoyée. Vous aurez une réponse dans les 48 heures.'
 
@@ -385,26 +393,41 @@ def add_requisition(request):
 
 @login_required()
 def payment(request, number):
-    context = { }
+    # sourcery skip: inline-immediately-returned-variable, remove-unreachable-code
+    context = {}
     try:
         requisition = Requisition.objects.get(number=number)
         context["requisition"] = requisition
-        context["vv"] = 900000
-        context["register"] = context["vv"] * 0.05
-        context["taxe"] = context["vv"] * 0.01
-        context["safe"] = context["vv"] * 0.02
-        context["fixed"] = 1000
-        context["jort"] = 10000
-        context["deposit"] = 2000
-        if request.method == "POST":
-            form = request.POST
-            requisition.pay = time()
-            requisition.pay_date = datetime.now()
-            requisition.save()
+        url = "https://mysterious-forest-88850.herokuapp.com//api/v1/predict/"
+        area = (requisition.area_a *100) + requisition.area_ca,
+        PARAMS = {
+            "type_property": "terrain",
+            "type_zone": "rural",
+            "quartier": "adidogome",
+            "have_closure": 0,
+            "dist_road": 720,
+            "area": area
+        }
+        vv = requests.get(url, PARAMS)
+        if vv.status_code == 200:
+            context["vv"] = vv.json()['Valeur vénale']
+            context["register"] = context["vv"] * 0.05
+            context["taxe"] = context["vv"] * 0.01
+            context["safe"] = context["vv"] * 0.02
+            context["fixed"] = 1000
+            context["jort"] = 10000
+            context["deposit"] = 2000
+            if request.method == "POST":
+                form = request.POST
+                requisition.pay = int(time())
+                requisition.pay_date = datetime.now()
+                requisition.save()
 
-            invoice(request, requisition, context)
+                invoice(request, requisition, context)
 
-            return redirect('single_requisition', number=int(requisition.number))
+                return redirect('single_requisition', number=int(requisition.number))
+        else:
+            return redirect('error500')
 
     except ObjectDoesNotExist:
         context["error"] = "Cette réquisition n'existe pas."
@@ -421,40 +444,45 @@ def state_requisition(request):
     return redirect('requisitions')
 
 def single_requisition(request, number):
-    context = {'template': 'layouts/base.html' , "Auth": True}
+    context = {
+        'template': 'layouts/base.html' , 
+        "Auth": True
+    }
     try:
         requisition = Requisition.objects.get(number=number)
         if request.user.is_authenticated:
             try:
                 u = request.user.person
                 requisitions = Requisition.objects.all()
-                if requisition.author.username != request.user:
-                    context['Auth'] = False
+                
                 if u.type == 'CLIENT':
                     context['template'] = 'main/base.html'
+                    if requisition.author != request.user:
+                        context['Auth'] = False
                 elif u.type == 'BORNAGE':
-                    if not requisition.demarcation_set():
+                    if not requisition.demarcation_set.all():
                         surveyors = Person.objects.filter(type='GEOMETRE')
                         drawers = Person.objects.filter(type='DESSIN')
                         context["surveyors"] = surveyors
                         context["drawers"] = drawers
+                
+                context["requisition"] = requisition
+                if request.method == "POST":
+                    if request.FILES['floor_plan'].name.split('.')[-1] != 'pdf':
+                        context['file'] = "Le fichier doit être en PDF."
+                    else:
+                        add_plan(request, request.POST.get('id'), request.FILES['floor_plan'])
+
             except ObjectDoesNotExist:
                 context['template'] = 'main/base.html'
-                context['Auth'] = False
+                if requisition.author != request.user:
+                    context['Auth'] = False
         else:
             context['template'] = 'main/base.html'
             if requisition.author.username != request.user:
                 context['Auth'] = False
 
         
-        context["requisition"] = requisition
-        if request.method == "POST":
-            if request.FILES['floor_plan'].name.split('.')[-1] != 'pdf':
-                context['file'] = "Le fichier doivent être un PDF."
-            else:
-                add_plan(request.user, request.POST.get('id'), request.FILES['floor_plan'])
-                return redirect(request.META['HTTP_REFERER'])
-
     except ObjectDoesNotExist:
         message = "Cette réquisition n'existe pas."
         return redirect(reverse('error404', 
@@ -515,25 +543,28 @@ def add_complaint(request, number):
             form = request.POST
             proof_file = request.FILES['proof_file']
 
-            author = User.objects.get(username=request.user)
-            complaint = Complaint.objects.create(
-                id = int(time()),
-                object=form.get('object'),
-                message=form.get('message'),
-                proof_file=proof_file,
-                author = author,
-                requisition = requisition
-            )
-            complaint.save()
+            if request.FILES['proof_file'].name.split('.')[-1] != 'pdf':
+                context['file'] = "Le fichier doit être en PDF."
+            else:
+                author = User.objects.get(username=request.user)
+                complaint = Complaint.objects.create(
+                    id = int(time()),
+                    object=form.get('object'),
+                    message=form.get('message'),
+                    proof_file=proof_file,
+                    author = author,
+                    requisition = requisition
+                )
+                complaint.save()
 
-            texte = f'Plainte {complaint.id}'
+                texte = f'Plainte {complaint.id}'
 
-            state = State.objects.create(requisition=requisition, state='P', raison = texte, author=author)
+                state = State.objects.create(requisition=requisition, state='P', raison = texte, author=author)
 
-            context["requisition"] = requisition
-            context['message'] = 'Plainte bien envoyé. Vous aurez une réponse dans les 48 heures.'
+                context["requisition"] = requisition
+                context['message'] = 'Plainte bien envoyé. Vous aurez une réponse dans les 48 heures.'
 
-            return redirect('my-complaints')
+                return redirect('my_complaints')
     except ObjectDoesNotExist:
         context["error"] = "Cette réquisition n'existe pas."
 
@@ -663,7 +694,7 @@ def reports(request):
 def add_report(request, id):
     try:
         demarcation = Demarcation.objects.get(pk=id)
-        if demarcation.surveyor.username == request.user:
+        if demarcation.surveyor != request.user:
             return redirect('error403')   
         context = {
             "id": id,
@@ -765,7 +796,7 @@ def invoice(request, requisition, context):
         context=context,
         show_content_in_browser=True
     )
-    fPath = f"./media/invoices/facture-req{requisition.number}.pdf"    
+    fPath = f"{BASE_DIR}/media/invoices/facture-req{requisition.number}.pdf"    
     with open(fPath, "wb") as f:
         f.write(response.rendered_content)
 
@@ -774,15 +805,15 @@ def invoice(request, requisition, context):
         requisition.liquidation_receipt = File(f, name=path.name)
         requisition.save()
 
-def req_file(request, requisition):
-    #requisition = Requisition.objects.get(number=number)
+def req_file(request, number):
+    requisition = Requisition.objects.get(number=number)
     str_template= render_to_string("requisition/fiche.html", {"requisition":requisition})
     response = PDFTemplateResponse(
         request,
         engines['django'].from_string(str_template),
         show_content_in_browser=True
     )
-    fPath = f"./media/files/fiche-req{requisition.number}.pdf"    
+    fPath = f"{BASE_DIR}/media/files/fiche-req{requisition.number}.pdf"    
     with open(fPath, "wb") as f:
         f.write(response.rendered_content)
 
@@ -791,3 +822,25 @@ def req_file(request, requisition):
         requisition.file = File(f, name=path.name)
         requisition.save()
     return response
+
+
+def fb_page(request, number):
+    page_id = 104081802431797
+    access_token = "EAANtdsp8wU0BAMKntZArnktxlp9rUPKUtZAKMwZAqM51c23fC9DgfLkeLUJOZAvfW65RPqMuno12ZBt0pq1UsDzSQVfIT9VpZCJcs3sC00BahWneNSZBLLZC1hJ6whLa1eppbvwXKL4ZBvsCsrpfVla60oMXR4dDV5qcvG0ZBZCBbQaUZB5iTEYNyXaZC"
+    link = f"localhost:8000/requisitions/{number}"
+    message = "Une nouvelle demande d'immatriculation est en cours d'étude. Cliquez que le lien pour en savoir plus"
+
+    url = f"https://graph.facebook.com/{page_id}/feed"
+
+    PARAMS = {
+        "message": message,
+        "link": link,
+        "access_token": access_token
+    }
+
+    response = requests.get(url, PARAMS)
+
+    if response.status_code != 200:
+        print(response.json())
+        return redirect("journal")
+    return redirect("home")

@@ -3,6 +3,11 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta property='og:title' content='Togoland' />
+  <meta property='og:image' content='/static/img/armoirie2.png' />
+  <meta property='og:description' content="Site d'immatriculation foncière au Togo" />
+  <meta property='og:url' content='localhost:8000'/>
+
   <title>{% block title %}DADC{% endblock %}</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -25,10 +30,11 @@
   <nav id="navbar-main" class="navbar navbar-horizontal navbar-dark navbar-main navbar-expand-lg bg-dark">
     <div class="container">
       <a class="navbar-brand" href="/">
-    {% load static%}
-    <img src="{% static 'img/armoirie.png' %}" alt="">
+        {% load static%}
+        <img src="{% static 'img/armoirie.png' %}" alt="">
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse"
+        aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-collapse navbar-custom-collapse collapse" id="navbar-collapse">
@@ -40,7 +46,8 @@
               </a>
             </div>
             <div class="col-6 collapse-close">
-              <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+              <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse"
+                aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span></span>
                 <span></span>
               </button>
@@ -74,7 +81,8 @@
         {% if user.is_authenticated %}
         <ul class="navbar-nav align-items-center  ml-auto">
           <li class="nav-item dropdown">
-            <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
               <div class="media align-items-center">
                 <span class="avatar avatar-sm rounded-circle">
                   <img alt="Image placeholder" src="/static/assets/img/theme/team-4.jpg">
@@ -139,10 +147,10 @@
       <div class="row px-4" id="featured-3">
         <div class="row g-4 row-cols-1 row-cols-lg-3">
           <div class="feature col">
-            <iframe
+            <!-- <iframe
               src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d63468.210468567035!2d1.1541312!3d6.1624662!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sfr!2stg!4v1659308087402!5m2!1sfr!2stg"
               width="400" height="200" style="border:0;" allowfullscreen="" loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"></iframe>
+              referrerpolicy="no-referrer-when-downgrade"></iframe> -->
           </div>
           <div class="feature col">
             <h2 class="text-success">CONTACT</h2>

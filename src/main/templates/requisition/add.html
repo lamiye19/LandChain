@@ -143,17 +143,17 @@
                             <input type="file" class="form-control" id="notarial_instrument" name="notarial_instrument"
                                 accept="application/pdf" required>
                         </div>
-                        {% if file %}
-                        <br>
-                        <small class="text-danger text-center">{{file}}</small>
-                        {% endif %}
 
                         
-                        <div class="col-md-12" {% if user.person and user.person.nationality|lower != 'togolaise' %} {% else %} hidden{% endif %} >
+                        <div class="col-md-12" {% if user.person and user.person.nationality != 'TG' %} {% else %} hidden{% endif %} >
                             <label for="authorization" class="form-label">Autorisation pour les étrangers <span class="text-danger"> *</span></label>
                             <input type="file" class="form-control" id="authorization" name="authorization"
                                 accept="application/pdf">
                         </div>
+                        {% if file %}
+                        <br>
+                        <small class="text-danger text-center">{{file}}</small>
+                        {% endif %}
 
                         <div class="col-12 my-4 text-center">
                             <button type="reset" class="btn btn-outline-danger">Annuler</button>

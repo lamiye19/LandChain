@@ -119,7 +119,7 @@
           {% endif %}
         </div>
 
-        {% if Auth %}
+        {% if Auth == True %}
         <!-- Rapport de bornage  -->
         {% if requisition.demarcation_set.last.report_set.last %}
         {% with r=requisition.demarcation_set.last.report_set.last %}

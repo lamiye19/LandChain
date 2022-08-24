@@ -124,7 +124,7 @@
                         <div class="col-md-6">
                             <label for="password" class="form-label">Mot de passe <span class="text-danger"> *</span></label>
                             <input type="password" class="form-control" id="password" name="password" minlength="8"
-                                required>
+                                required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Doit contenir au moins un majiscule, un miniscule, un chifre et au moins 8 caractères">
                             {% if password %}
                             <small class="text-danger">{{password}}</small>
                             {% endif %}
@@ -170,7 +170,7 @@
                         <div class="col-md-6">
                             <label for="password" class="form-label">Mot de passe <span class="text-danger"> *</span></label>
                             <input type="password" class="form-control" id="password" name="password" minlength="8"
-                                required>
+                                required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Doit contenir au moins un majiscule, un miniscule, un chifre et au moins 8 caractères">
                             {% if password %}
                             <small class="text-danger">{{password}}</small>
                             {% endif %}

@@ -1,7 +1,6 @@
 <p class="card-text">
     Suivant réquisition n°
-    <a
-        href="{% url 'single_requisition' number=requisition.number %}">{{requisition.number}}</a>
+    <a href="{% url 'single_requisition' number=requisition.number %}">{{requisition.number}}</a>
     déposée le {{requisition.date|date:"d F Y"}},
     {% if requisition.author.person %}
     {{requisition.author.person.get_gender_display}} {{requisition.author.get_full_name}},
@@ -46,3 +45,60 @@
     sa/leur connaissance grevé d’aucuns droits ou charges
     réels, actuels ou éventuels.
 </p>
+
+{% if requisition.state_set.first.state == 'A' %}
+<div class="social text-end">
+    <small class="me-5">
+        Partager:
+    </small>
+    <div class="">
+    {% with id=requisition.number|stringformat:"s" %}
+    {% with url="localhost:8000/requisitions/"|add:id %}
+    
+    <a onclick="copyLink()" title="Copier le lien de la page"><i class="fa fa-copy text-black"></i></a>
+    <input type="hidden" value="{{url}}" id="url">
+
+    <a
+        href="https://www.facebook.com/sharer.php?u=www.jscorporationtogo.com&m=J'aimerais partager cette demande d'immatriculation avec vous. {{url}}">
+        <i class="bi bi-facebook text-primary"></i>
+    </a>
+
+
+    <a
+        href="mailto:?subject=J'ai vu cette demande d'immatriculation qui pourrait t'intéresser&amp;body=Consulte ce lien pour en savoir plus sur la demande: {{ url }}">
+        <i class="ni ni-email-83 text-red"></i>
+    </a>
+
+    <a
+        href="https://www.twitter.com/share?url={{ url }}&text=J'aimerais partager cette demande d'immatriculation avec vous&hashtags=requisition,immatriculation,togoland,titre,foncier">
+        <i class="bi bi-twitter text-primary"></i>
+    </a>
+
+    <a
+        href="https://api.whatsapp.com/send?text=J'aimerais partager cette demande d'immatriculation avec toi. Consulte ce lien pour en savoir plus {{ url }}">
+        <i class="bi bi-whatsapp text-success"></i></a>
+
+
+    <!-- <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ url }}&summary=J'aimerais partager cette demande d'immatriculation avec vous&title=Immatriculation foncière au Togo&source=TogoLand">
+        <i class="fa bi-linkedin text-primary"></i>
+    </a> -->
+
+
+    {% endwith %}
+    {% endwith %}
+</div>
+</div>
+{% endif %}
+
+<script>
+    function copyLink() {
+        var text = document.getElementById('url');
+        text.select();
+        //text.setSelectionRange(0, 99999); /* For mobile devices */
+        /* Copy the text inside the text field */
+        navigator.clipboard.writeText(text.value);
+
+        /* Alert the copied text */
+        //alert("Copied the text: " + text.value);
+    };
+</script>

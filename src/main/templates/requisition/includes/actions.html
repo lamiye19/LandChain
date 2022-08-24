@@ -2,13 +2,14 @@
   <div class="d-flex flex-column">
     <h3 class="text-uppercase">Action</h3>
     {% if not requisition.pay_date %}
-    {% if user == requisition.author.username %}
+    {% if user.username == requisition.author.username %}
     <a href="{% url 'payment' number=requisition.number %}">Paiement requis</a>
     {% else %}
     En attente de paiement
     {% endif %}
     {% elif not states %}
     {% if user.person.type == 'GUICHET' %}
+    {% if user.username != requisition.author.username %}
     <form method="POST" action="{% url 'state_requisition' %}">
       {% csrf_token %}
       <input type="hidden" name="number" value="{{requisition.number}}">
@@ -16,10 +17,12 @@
       <button type="submit" class="btn btn-success" value="A" name="state">Publier</button>
     </form>
     {% endif %}
+    {% endif %}
     {% elif states.last.state == "A" %}
     {% with d=requisition.demarcation_set.last %}
     {% if not d %}
     {% if user.person.type == 'BORNAGE' %}
+    {% if user.username != requisition.author.username %}
     <h3>Programmer travaux de bornage</h3>
     <form method="POST" action="{% url 'add_demarcation' %}" class="row">
       {% csrf_token %}
@@ -53,6 +56,7 @@
       </div>
     </form>
     {% endif %}
+    {% endif %}
     {% elif not d.report_set.last %}
     <h3>Rapport des travaux de bornage</h3>
     {% if user.username == d.surveyor.username %}
@@ -69,7 +73,7 @@
       <input type="hidden" name="id" value="{{requisition.demarcation_set.last.report_set.last.pk}}">
       <div class="col-md-6">
         <label for="floor_plan" class="form-label">Plan parcelaire<span class="text-danger"> *</span></label>
-        <input type="file" class="form-control" id="floor_plan" name="floor_plan" required>
+        <input type="file" class="form-control" id="floor_plan" name="floor_plan" required accept="application/pdf">
         {% if file %}
         <small class="text-red"> {{file}} </small>
         {% endif %}

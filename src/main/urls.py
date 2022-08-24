@@ -9,14 +9,16 @@ app_label = "main"
 
 urlpatterns = [
     path('pdf/<int:number>/', views.req_file, name="pdf"),
+    path('fb/<int:number>/', views.fb_page, name="fb"),
     path('pdf/', views.invoice, name="pdf2"),
 
-    path("acces-non-autorise", views.error403, name="error403"),
-    path("ressource-introuvable/<message>", views.error404, name="error404"),
+    path("acces-non-autorise/", views.error403, name="error403"),
+    path("ressource-introuvable/<message>/", views.error404, name="error404"),
+    path("erreur/", views.error500, name="error500"),
 
-    path("tableau-de-bord", views.dashbord, name="dashbord"),
-    path("profil", views.profile, name="profile"),
-    path("clients", views.all_user, name="client"),
+    path("tableau-de-bord/", views.dashbord, name="dashbord"),
+    path("profil/", views.profile, name="profile"),
+    path("clients/", views.all_user, name="client"),
     path("agents-division-cadastre", views.all_guichet_user, name="guichet"),
     path("agents-bureau-de-bornage", views.all_bornage_user, name="b_bornage"),
     path("ordre-des-geometre", views.all_geometre_user, name="geometre"),
